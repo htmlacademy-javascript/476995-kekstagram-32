@@ -10,6 +10,7 @@ const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const formEl = document.querySelector('#upload-select-image');
 const fileInputEl = formEl.querySelector('#upload-file');
 const imagePreviewEl = formEl.querySelector('.img-upload__preview img');
+const effectsPreviewListEl = formEl.querySelectorAll('.effects__preview');
 const hashtagsEl = formEl.querySelector('input[name="hashtags"]');
 const commentEl = formEl.querySelector('textarea[name="description"]');
 const formSubmitBtn = formEl.querySelector('#upload-submit');
@@ -54,7 +55,11 @@ const setPreviewImage = () => {
     const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
     if (matches) {
-      imagePreviewEl.src = URL.createObjectURL(file);
+      const blobUrl = URL.createObjectURL(file);
+      imagePreviewEl.src = blobUrl;
+      Array.from(effectsPreviewListEl).forEach((effectPreviewEl) => {
+        effectPreviewEl.style.backgroundImage = `url('${blobUrl}')`;
+      });
     }
   }
 };
@@ -65,27 +70,27 @@ const openEditPhotoModal = () => {
   document.addEventListener('keydown', closeEditModalByEsc);
 };
 
+const normalizeTags = (value) => value.trim().split(' ').filter((t) => !!t);
+
 const checkHashtagsToCorrect = (value) => {
-  const trimmedValue = value.trim();
+  const hashtags = normalizeTags(value);
   // Если ничего не введено, то всё норм.
   // Считаем, что валидация удалась, т.к. поле заполнять необязательно
-  if (trimmedValue.length === 0) {
+  if (hashtags.length === 0) {
     return true;
   }
-
-  const hashtags = trimmedValue.split(' ');
 
   return hashtags.every((ht) => VALID_HASTAG_REGEX.test(ht));
 };
 
 const checkUniqueHashtags = (value) => {
-  const hashtags = value.trim().split(' ');
+  const hashtags = normalizeTags(value);
   const uniqueHashtags = new Set(hashtags.map((ht) => ht.toLowerCase()));
 
   return hashtags.length === uniqueHashtags.size;
 };
 
-const checkAmountHashtags = (value) => value.trim().split(' ').length <= MAX_AMOUNT_HASHTAGS;
+const checkAmountHashtags = (value) => normalizeTags(value).length <= MAX_AMOUNT_HASHTAGS;
 
 const checkCommentLength = (value) => value.trim().length <= MAX_COMMENT_LENGTH;
 
@@ -165,6 +170,8 @@ const onFormSubmit = (e) => {
         showUploadErrorMsg();
       }
     );
+  } else {
+    formSubmitBtn.disabled = false;
   }
 };
 

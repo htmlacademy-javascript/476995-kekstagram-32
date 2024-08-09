@@ -3,6 +3,7 @@ import { getPictures } from './api.js';
 import { renderThumbnails } from './thumbnails.js';
 import { openPictureModal } from './picture-modal/picture-modal.js';
 
+const CLOSE_TIMEOUT = 5000;
 const Filters = {
   DEFAULT: 'default',
   RANDOM: 'random',
@@ -16,7 +17,7 @@ const showErrorMsg = () => {
   const errEl = errTmplEl.cloneNode(true);
   document.body.append(errEl);
 
-  setTimeout(() => errEl.remove(), 5000);
+  setTimeout(() => errEl.remove(), CLOSE_TIMEOUT);
 };
 
 let pictures = [];

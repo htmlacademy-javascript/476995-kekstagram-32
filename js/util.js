@@ -6,25 +6,6 @@ const getRandomInteger = (min, max) => {
   return Math.floor(result);
 };
 
-const createUniqueIdGenerator = (min, max) => {
-  const previousIds = [];
-
-  return function () {
-    if (previousIds.length >= max - min + 1) {
-      return null;
-    }
-
-    let id = getRandomInteger(min, max);
-
-    while (previousIds.includes(id)) {
-      id = getRandomInteger(min, max);
-    }
-
-    previousIds.push(id);
-    return id;
-  };
-};
-
 const getRandomValuesFromArray = (arr, amount) => {
   const values = [];
 
@@ -49,4 +30,4 @@ const debounce = (callback, timeoutDelay = 500) => {
   };
 };
 
-export { getRandomInteger, createUniqueIdGenerator, getRandomValuesFromArray, debounce };
+export { getRandomInteger, getRandomValuesFromArray, debounce };

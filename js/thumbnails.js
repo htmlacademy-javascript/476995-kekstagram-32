@@ -1,7 +1,7 @@
 const renderThumbnails = (picturesData, onClickCallback) => {
   const containerEl = document.querySelector('.pictures');
   const pictureTmplEl = document.querySelector('#picture').content.querySelector('.picture');
-  const picturesFragment = document.createDocumentFragment();
+  const picturesFragmentEl = document.createDocumentFragment();
 
   picturesData.forEach(({ url, description, likes, comments }) => {
     const pictureEl = pictureTmplEl.cloneNode(true);
@@ -12,11 +12,11 @@ const renderThumbnails = (picturesData, onClickCallback) => {
 
     pictureEl.addEventListener('click', () => onClickCallback(url, description, likes, comments));
 
-    picturesFragment.append(pictureEl);
+    picturesFragmentEl.append(pictureEl);
   });
 
   Array.from(containerEl.querySelectorAll('.picture')).forEach((picEl) => picEl.remove());
-  containerEl.append(picturesFragment);
+  containerEl.append(picturesFragmentEl);
 };
 
 export { renderThumbnails };
