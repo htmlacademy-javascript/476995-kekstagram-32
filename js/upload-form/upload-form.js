@@ -1,6 +1,8 @@
 import { initScale, resetScale } from './scale-img.js';
 import { initEffect, resetEffect } from './effect-img.js';
 import { sendPicture } from './../api.js';
+import { showUploadSuccessMsg } from './success-msg.js';
+import { showUploadErrorMsg } from './error-msg.js';
 
 const VALID_HASTAG_REGEX = /^#[0-9a-zа-яё]{1,19}$/i;
 const MAX_AMOUNT_HASHTAGS = 5;
@@ -16,8 +18,6 @@ const commentEl = formEl.querySelector('textarea[name="description"]');
 const formSubmitBtn = formEl.querySelector('#upload-submit');
 const editPhotoModalEl = formEl.querySelector('.img-upload__overlay');
 const editPhotoModalCloseEl = editPhotoModalEl.querySelector('.img-upload__cancel');
-const uploadSuccessMsgTmplEl = document.querySelector('#success').content.querySelector('.success');
-const uploadErrorMsgTmplEl = document.querySelector('#error').content.querySelector('.error');
 
 const pristine = new Pristine(formEl, {
   classTo: 'img-upload__field-wrapper',
@@ -34,17 +34,17 @@ const hideModal = () => {
   resetEffect();
 };
 
-const closeEditModalByEsc = (e) => {
-  if (e.key === 'Escape' && document.activeElement !== hashtagsEl
+const onEscapeKeyDown = (evt) => {
+  if (evt.key === 'Escape' && document.activeElement !== hashtagsEl
     && document.activeElement !== commentEl && document.querySelector('.error') === null) {
     hideModal();
-    document.removeEventListener('keydown', closeEditModalByEsc);
+    document.removeEventListener('keydown', onEscapeKeyDown);
   }
 };
 
 const closeEditPhotoModal = () => {
   hideModal();
-  document.removeEventListener('keydown', closeEditModalByEsc);
+  document.removeEventListener('keydown', onEscapeKeyDown);
 };
 
 const setPreviewImage = () => {
@@ -52,7 +52,7 @@ const setPreviewImage = () => {
     const file = fileInputEl.files[0];
     const fileName = file.name.toLowerCase();
 
-    const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+    const matches = FILE_TYPES.some((fileType) => fileName.endsWith(fileType));
 
     if (matches) {
       const blobUrl = URL.createObjectURL(file);
@@ -67,10 +67,10 @@ const setPreviewImage = () => {
 const openEditPhotoModal = () => {
   editPhotoModalEl.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  document.addEventListener('keydown', closeEditModalByEsc);
+  document.addEventListener('keydown', onEscapeKeyDown);
 };
 
-const normalizeTags = (value) => value.trim().split(' ').filter((t) => !!t);
+const normalizeTags = (value) => value.trim().split(' ').filter((tag) => !!tag);
 
 const checkHashtagsToCorrect = (value) => {
   const hashtags = normalizeTags(value);
@@ -80,12 +80,12 @@ const checkHashtagsToCorrect = (value) => {
     return true;
   }
 
-  return hashtags.every((ht) => VALID_HASTAG_REGEX.test(ht));
+  return hashtags.every((hashtag) => VALID_HASTAG_REGEX.test(hashtag));
 };
 
 const checkUniqueHashtags = (value) => {
   const hashtags = normalizeTags(value);
-  const uniqueHashtags = new Set(hashtags.map((ht) => ht.toLowerCase()));
+  const uniqueHashtags = new Set(hashtags.map((hashtag) => hashtag.toLowerCase()));
 
   return hashtags.length === uniqueHashtags.size;
 };
@@ -101,59 +101,8 @@ const initValidateRules = () => {
   pristine.addValidator(commentEl, checkCommentLength, 'Комментарий не может быть больше 140 символов');
 };
 
-const closeUploadSuccessMsgByEsc = (e) => {
-  if (e.key === 'Escape') {
-    document.querySelector('.success').remove();
-    document.removeEventListener('keydown', closeUploadSuccessMsgByEsc);
-  }
-};
-
-const showUploadSuccessMsg = () => {
-  const uploadSuccessMsgEl = uploadSuccessMsgTmplEl.cloneNode(true);
-  const successButton = uploadSuccessMsgEl.querySelector('.success__button');
-  document.body.append(uploadSuccessMsgEl);
-
-  successButton.addEventListener('click', () => {
-    uploadSuccessMsgEl.remove();
-    document.removeEventListener('keydown', closeUploadSuccessMsgByEsc);
-  });
-  uploadSuccessMsgEl.addEventListener('click', (e) => {
-    if (!e.target.closest('.success__inner')) {
-      uploadSuccessMsgEl.remove();
-      document.removeEventListener('keydown', closeUploadSuccessMsgByEsc);
-    }
-  });
-  document.addEventListener('keydown', closeUploadSuccessMsgByEsc);
-};
-
-const closeUploadErrorMsgByEsc = (e) => {
-  if (e.key === 'Escape') {
-    e.stopImmediatePropagation();
-    document.querySelector('.error').remove();
-    document.removeEventListener('keydown', closeUploadErrorMsgByEsc);
-  }
-};
-
-const showUploadErrorMsg = () => {
-  const uploadErrorMsgEl = uploadErrorMsgTmplEl.cloneNode(true);
-  const errorButton = uploadErrorMsgEl.querySelector('.error__button');
-  document.body.append(uploadErrorMsgEl);
-
-  errorButton.addEventListener('click', () => {
-    uploadErrorMsgEl.remove();
-    document.removeEventListener('keydown', closeUploadErrorMsgByEsc);
-  });
-  uploadErrorMsgEl.addEventListener('click', (e) => {
-    if (!e.target.closest('.error__inner')) {
-      uploadErrorMsgEl.remove();
-      document.removeEventListener('keydown', closeUploadErrorMsgByEsc);
-    }
-  });
-  document.addEventListener('keydown', closeUploadErrorMsgByEsc);
-};
-
-const onFormSubmit = (e) => {
-  e.preventDefault();
+const onFormSubmit = (evt) => {
+  evt.preventDefault();
   formSubmitBtn.disabled = true;
 
   if (pristine.validate()) {
@@ -180,7 +129,7 @@ const initUploadForm = () => {
     setPreviewImage();
     openEditPhotoModal();
   });
-  editPhotoModalCloseEl.addEventListener('click', closeEditPhotoModal);
+  editPhotoModalCloseEl.addEventListener('click', () => closeEditPhotoModal());
   initValidateRules();
   formEl.addEventListener('submit', onFormSubmit);
 

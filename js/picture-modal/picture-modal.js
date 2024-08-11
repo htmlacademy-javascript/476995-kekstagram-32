@@ -15,8 +15,8 @@ const hidePictureModal = () => {
   document.body.classList.remove('modal-open');
 };
 
-const onEscapeKeyDown = (e) => {
-  if (e.key === 'Escape') {
+const onEscapeKeyDown = (evt) => {
+  if (evt.key === 'Escape') {
     hidePictureModal();
     document.removeEventListener('keydown', onEscapeKeyDown);
   }
@@ -60,7 +60,7 @@ const openPictureModal = (url, description, likes, comments) => {
   document.addEventListener('keydown', onEscapeKeyDown);
 };
 
-commentsLoadBtn.addEventListener('click', appendCommentsChunk);
-closeModalEl.addEventListener('click', closePictureModal);
+commentsLoadBtn.addEventListener('click', () => appendCommentsChunk());
+closeModalEl.addEventListener('click', () => closePictureModal());
 
 export { openPictureModal };

@@ -4,7 +4,6 @@ const MIN_SCALE_VALUE = 25;
 const MAX_SCALE_VALUE = 100;
 const DEFAULT_SCALE_VALUE = 100;
 
-
 const modalEl = document.querySelector('.img-upload');
 const scaleDownBtn = modalEl.querySelector('.scale__control--smaller');
 const scaleUpBtn = modalEl.querySelector('.scale__control--bigger');

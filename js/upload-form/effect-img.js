@@ -96,7 +96,7 @@ const updateEffect = (effect) => {
 
 const initEffect = () => {
   createSlider();
-  effectsListEl.addEventListener('change', (e) => updateEffect(e.target.value));
+  effectsListEl.addEventListener('change', (evt) => updateEffect(evt.target.value));
 };
 
 const resetEffect = () => updateEffect(Effect.DEFAULT);

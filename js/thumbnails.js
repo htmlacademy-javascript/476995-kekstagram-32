@@ -15,7 +15,7 @@ const renderThumbnails = (picturesData, onClickCallback) => {
     picturesFragmentEl.append(pictureEl);
   });
 
-  Array.from(containerEl.querySelectorAll('.picture')).forEach((picEl) => picEl.remove());
+  Array.from(containerEl.querySelectorAll('.picture')).forEach((pictureEl) => pictureEl.remove());
   containerEl.append(picturesFragmentEl);
 };
 

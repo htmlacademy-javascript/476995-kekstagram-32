@@ -6,19 +6,19 @@ const getRandomInteger = (min, max) => {
   return Math.floor(result);
 };
 
-const getRandomValuesFromArray = (arr, amount) => {
-  const values = [];
+const getRandomValuesFromArray = (values, amount) => {
+  const randomValues = [];
 
-  while (values.length < amount && values.length !== arr.length) {
-    const index = getRandomInteger(0, arr.length - 1);
-    const value = arr[index];
+  while (randomValues.length < amount && randomValues.length !== values.length) {
+    const index = getRandomInteger(0, values.length - 1);
+    const value = values[index];
 
-    if (!values.includes(value)) {
-      values.push(value);
+    if (!randomValues.includes(value)) {
+      randomValues.push(value);
     }
   }
 
-  return values;
+  return randomValues;
 };
 
 const debounce = (callback, timeoutDelay = 500) => {

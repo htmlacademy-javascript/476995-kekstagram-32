@@ -36,7 +36,7 @@ const filterPictures = (filterType) => {
       break;
 
     case Filters.DISCUSSED:
-      filteredPictures = pictures.slice().sort((a, b) => b.comments.length - a.comments.length);
+      filteredPictures = pictures.slice().sort((pictureA, pictureB) => pictureB.comments.length - pictureA.comments.length);
       break;
   }
 
@@ -45,9 +45,9 @@ const filterPictures = (filterType) => {
 
 const initFilters = () => {
   filtersEl.classList.remove('img-filters--inactive');
-  filtersEl.addEventListener('click', (e) => {
-    if (e.target.closest('.img-filters__button')) {
-      const filterBtnEl = e.target.closest('.img-filters__button');
+  filtersEl.addEventListener('click', (evt) => {
+    if (evt.target.closest('.img-filters__button')) {
+      const filterBtnEl = evt.target.closest('.img-filters__button');
       const filterType = filterBtnEl.id.split('-')[1];
 
       filtersEl.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
